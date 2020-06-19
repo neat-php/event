@@ -1,0 +1,30 @@
+{
+    "name": "neat/event",
+    "description": "Neat Event components",
+    "keywords": ["event", "dispatcher"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Guido van Biemen",
+            "email": "guidovanbiemen@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Neat\\Event\\": "classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Neat\\Event\\Test\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.2",
+        "psr/event-dispatcher": "^1.0",
+        "neat/service": "^0.3.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0 || ^9.0"
+    }
+}
