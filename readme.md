@@ -5,7 +5,11 @@ Neat Event components
 [![codecov](https://codecov.io/gh/neat-php/event/branch/master/graph/badge.svg)](https://codecov.io/gh/neat-php/event)
 
 Neat Event components provide a clean and expressive API for your application
-to dispatch and listen for events.
+to dispatch and listen for events. The Neat Event components implement the
+[PSR-14](http://www.php-fig.org/psr/psr-14/) interfaces for optimal
+interoperability.
+
+NOTE: Event listeners are required to have their first parameter named '$event'.
 
 Getting started
 ---------------
@@ -52,6 +56,8 @@ class SomeStoppableEvent implements Neat\Event\Stoppable
 
 Listen for events
 -----------------
+Your event lister can be any callable function or method as long as it has
+an ```$event``` parameter that accepts the event object we're listening for.
 ```php
 <?php
 
@@ -68,13 +74,13 @@ $dispatcher->listen(SomeSpecificEvent::class, function (SomeSpecificEvent $event
 
 Dispatch an event
 -----------------
-Now we're ready to dispatch a new event
+Now we're ready to dispatch an event
 ```php
 <?php
 
-// First create an instance of your event
-$event = new Event();
+// This will trigger only the SomeEvent listener, NOT the SomeSpecificEvent listener
+$dispatcher->dispatch(new SomeEvent());
 
-// Then let the dispatcher call all the appropriate listeners
-$dispatcher->dispatch($event);
+// This will trigger both the SomeEvent and SomeSpecificEvent listeners
+$dispatcher->dispatch(new SomeSpecificEvent());
 ```
