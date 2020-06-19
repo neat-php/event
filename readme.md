@@ -61,7 +61,7 @@ $dispatcher->listen(SomeEvent::class, function (SomeEvent $event) {
 });
 
 // Or for a specific event
-$dispatcher->listen(SomeSpecificEvent::class, , function (SomeSpecificEvent $event) {
+$dispatcher->listen(SomeSpecificEvent::class, function (SomeSpecificEvent $event) {
     // ...
 });
 ```
