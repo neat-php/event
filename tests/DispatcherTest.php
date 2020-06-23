@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class DispatcherTest extends TestCase
 {
     /**
-     * @return Listener|MockObject
+     * @return Container|MockObject
      */
     private function container(): Container
     {
@@ -25,16 +25,29 @@ class DispatcherTest extends TestCase
         return $this->getMockBuilder(Listener::class)->getMock();
     }
 
-    public function testEmpty()
+    public function provideListenersMethods()
+    {
+        return [['listeners'], ['getListenersForEvent']];
+    }
+
+    /**
+     * @dataProvider provideListenersMethods
+     * @param string $method
+     */
+    public function testEmpty(string $method)
     {
         $dispatcher = new Dispatcher($this->container());
 
-        $this->assertSame(0, iterator_count($dispatcher->listeners(new Event())));
+        $this->assertSame(0, iterator_count($dispatcher->{$method}(new Event())));
 
         $dispatcher->dispatch(new Event());
     }
 
-    public function testDispatchEvent()
+    /**
+     * @dataProvider provideListenersMethods
+     * @param string $method
+     */
+    public function testDispatchEvent(string $method)
     {
         $event = new Event();
 
@@ -49,13 +62,17 @@ class DispatcherTest extends TestCase
         $dispatcher = new Dispatcher($container);
         $dispatcher->listen(Event::class, [$listener, 'notify']);
 
-        $this->assertSame([[$listener, 'notify']], iterator_to_array($dispatcher->listeners($event)));
+        $this->assertSame([[$listener, 'notify']], iterator_to_array($dispatcher->{$method}($event)));
         $dispatcher->dispatch($event);
 
-        $dispatcher->dispatch((object) []);
+        $dispatcher->dispatch((object)[]);
     }
 
-    public function testDispatchEventParentChild()
+    /**
+     * @dataProvider provideListenersMethods
+     * @param string $method
+     */
+    public function testDispatchEventParentChild(string $method)
     {
         $event = new EventChild();
 
@@ -70,11 +87,15 @@ class DispatcherTest extends TestCase
         $dispatcher = new Dispatcher($container);
         $dispatcher->listen(EventParent::class, [$listener, 'notify']);
 
-        $this->assertSame([[$listener, 'notify']], iterator_to_array($dispatcher->listeners($event)));
+        $this->assertSame([[$listener, 'notify']], iterator_to_array($dispatcher->{$method}($event)));
         $dispatcher->dispatch($event);
     }
 
-    public function testDispatchEventInterfaceChild()
+    /**
+     * @dataProvider provideListenersMethods
+     * @param string $method
+     */
+    public function testDispatchEventInterfaceChild(string $method)
     {
         $event = new EventChild();
 
@@ -89,7 +110,7 @@ class DispatcherTest extends TestCase
         $dispatcher = new Dispatcher($container);
         $dispatcher->listen(EventInterface::class, [$listener, 'notify']);
 
-        $this->assertSame([[$listener, 'notify']], iterator_to_array($dispatcher->listeners($event)));
+        $this->assertSame([[$listener, 'notify']], iterator_to_array($dispatcher->{$method}($event)));
         $dispatcher->dispatch($event);
     }
 

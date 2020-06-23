@@ -4,9 +4,10 @@ namespace Neat\Event;
 
 use Neat\Service\Container;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
-class Dispatcher implements EventDispatcherInterface
+class Dispatcher implements EventDispatcherInterface, ListenerProviderInterface
 {
     /** @var Container */
     private $container;
@@ -59,6 +60,11 @@ class Dispatcher implements EventDispatcherInterface
         foreach ($this->types($event) as $type) {
             yield from $this->listeners[$type] ?? [];
         }
+    }
+
+    public function getListenersForEvent(object $event): iterable
+    {
+        yield from $this->listeners($event);
     }
 
     /**
