@@ -1,7 +1,10 @@
 {
     "name": "neat/event",
     "description": "Neat Event components",
-    "keywords": ["event", "dispatcher"],
+    "keywords": [
+        "event",
+        "dispatcher"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -21,10 +24,14 @@
     },
     "require": {
         "php": ">=7.2",
+        "neat/service": "^0.3.2",
         "psr/event-dispatcher": "^1.0",
-        "neat/service": "^0.3.2"
+        "psr/log": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0 || ^9.0"
+    },
+    "provide": {
+        "psr/event-dispatcher-implementation": "^1.0"
     }
 }
