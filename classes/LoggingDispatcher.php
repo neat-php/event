@@ -57,8 +57,8 @@ class LoggingDispatcher extends Dispatcher
                     $i,
                     $trace['file'],
                     $trace['line'],
-                    $trace['class'],
-                    $trace['function']
+                    $trace['class']??"",
+                    (isset($trace['function']))?$trace['function']."()":""
                 ));
             }
             $logger->info(" ");
