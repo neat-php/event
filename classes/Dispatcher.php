@@ -10,7 +10,7 @@ use Psr\EventDispatcher\StoppableEventInterface;
 class Dispatcher implements EventDispatcherInterface, ListenerProviderInterface
 {
     /** @var Container */
-    private $container;
+    protected $container;
 
     /** @var callable[][] */
     private $listeners = [];

@@ -43,7 +43,7 @@ class LoggingDispatcher extends Dispatcher
             $logger->info("Time:   ".date("Y-m-d H:i:s"));
             $logger->info("Event:  ".get_class($event));
             if ($event instanceof Event) {
-                $logger->info("Entity: ".get_class($event->entity()))."#".($event->entity()->id??"NULL");
+                $logger->info("Entity: ".get_class($event->entity())."#".($event->entity()->id??"NULL"));
             }
 
             $logger->info("\nTrace:");
