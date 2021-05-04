@@ -5,16 +5,16 @@ namespace Neat\Event;
 use Neat\Log\File;
 use Neat\Object\Event;
 use Neat\Service\Container;
-use Shopbox\Event\Configuration\Log as Configuration;
 
 class LoggingDispatcher extends Dispatcher
 {
-    private $configuration;
+    /** @var string */
+    protected $logFile;
 
-    public function __construct(Container $container, Configuration $configuration)
+    public function __construct(Container $container, string $logFile)
     {
         parent::__construct($container);
-        $this->configuration = $configuration;
+        $this->logFile = $logFile;
     }
 
     public function listeners(object $event): iterable
@@ -31,12 +31,8 @@ class LoggingDispatcher extends Dispatcher
         return parent::dispatch($event);
     }
 
-    private function log(object $event, $listener = null)
+    protected function log(object $event, $listener = null)
     {
-        if (!$this->configuration->logEvent($event)) {
-            return;
-        }
-
         $logger = new File($this->logPath($event));
 
         if ($listener !== null) {
@@ -67,7 +63,7 @@ class LoggingDispatcher extends Dispatcher
 
     private function logPath(object $event): string
     {
-        $path = str_replace('{date}', date('Ymd'), $this->configuration->file);
+        $path = str_replace('{date}', date('Ymd'), $this->logFile);
         $path = str_replace('{event}', str_replace("\\", '-', get_class($event)), $path);
 
         if (!file_exists(dirname($path))) {
