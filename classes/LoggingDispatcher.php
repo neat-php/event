@@ -51,8 +51,8 @@ class LoggingDispatcher extends Dispatcher
                 $logger->info(sprintf(
                     "#%s %s(%s): %s->%s",
                     $i,
-                    $trace['file'],
-                    $trace['line'],
+                    $trace['file']??"",
+                    $trace['line']??"",
                     $trace['class']??"",
                     (isset($trace['function']))?$trace['function']."()":""
                 ));
