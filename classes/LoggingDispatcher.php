@@ -2,9 +2,11 @@
 
 namespace Neat\Event;
 
+use Closure;
 use Neat\Log\File;
 use Neat\Object\Event;
 use Neat\Service\Container;
+use Psr\Log\LoggerInterface;
 
 class LoggingDispatcher extends Dispatcher
 {
@@ -31,31 +33,37 @@ class LoggingDispatcher extends Dispatcher
         return parent::dispatch($event);
     }
 
+    /**
+     * @param object              $event
+     * @param Closure|string|null $listener
+     * @return void
+     */
     protected function log(object $event, $listener = null)
     {
-        $logger = new File($this->logPath($event));
+        $logger = $this->getLogger($event);
 
         if ($listener !== null) {
             $logger->info("Listener: " . $listener);
         } else {
             $logger->info("\n------------------------------------------------------------------");
             $logger->info("Dispatching event");
-            $logger->info("Time:   ".date("Y-m-d H:i:s"));
-            $logger->info("Event:  ".get_class($event));
+            $logger->info("Time:   " . date("Y-m-d H:i:s"));
+            $logger->info("Event:  " . get_class($event));
             if ($event instanceof Event) {
-                $logger->info("Entity: ".get_class($event->entity())."#".($event->entity()->id??"NULL"));
+                $logger->info("Entity: " . get_class($event->entity()) . "#" . ($event->entity()->id ?? "NULL"));
             }
 
             $logger->info("\nTrace:");
             foreach (debug_backtrace() as $i => $trace) {
-                $logger->info(sprintf(
+                $message = sprintf(
                     "#%s %s(%s): %s->%s",
                     $i,
-                    $trace['file']??"",
-                    $trace['line']??"",
-                    $trace['class']??"",
-                    (isset($trace['function']))?$trace['function']."()":""
-                ));
+                    $trace['file'] ?? "",
+                    $trace['line'] ?? "",
+                    $trace['class'] ?? "",
+                    isset($trace['function']) ? $trace['function'] . "()" : ""
+                );
+                $logger->info($message);
             }
             $logger->info(" ");
         }
@@ -71,5 +79,14 @@ class LoggingDispatcher extends Dispatcher
         }
 
         return $path;
+    }
+
+    /**
+     * @param object $event
+     * @return LoggerInterface
+     */
+    private function getLogger(object $event): LoggerInterface
+    {
+        return new File($this->logPath($event));
     }
 }
