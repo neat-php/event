@@ -24,7 +24,7 @@
     },
     "require": {
         "php": ">=7.2",
-        "neat/service": "^0.3.2",
+        "neat/service": "^0.3.2 || ^0.4",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.1"
     },
